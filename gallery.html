@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>画廊 - AI Studio</title>
+    <style>
+        /* 复用基础样式 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-color: #00ff9d;
+            --secondary-color: #00cc7e;
+            --bg-color: #0a0b0f;
+            --card-bg: #151820;
+            --text-color: #e0e0e0;
+            --border-radius: 12px;
+            --shadow-color: rgba(0, 255, 157, 0.1);
+            --border-glow: 0 0 10px rgba(0, 255, 157, 0.2);
+            --card-hover-bg: #1c1f2b;
+        }
+
+        body {
+            font-family: "PingFang SC", "Microsoft YaHei", sans-serif;
+            line-height: 1.6;
+            color: var(--text-color);
+            background-color: var(--bg-color);
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(0, 255, 157, 0.05) 0%, transparent 20%),
+                radial-gradient(circle at 90% 80%, rgba(0, 255, 157, 0.05) 0%, transparent 20%);
+        }
+
+        /* 导航栏样式 */
+        nav {
+            background: rgba(21, 24, 32, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(0, 255, 157, 0.1);
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .nav-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        .nav-center {
+            display: flex;
+            align-items: center;
+            gap: 4rem;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--primary-color);
+            text-shadow: 0 0 10px rgba(0, 255, 157, 0.3);
+        }
+
+        .nav-links a {
+            color: var(--text-color);
+            text-decoration: none;
+            margin-left: 2rem;
+            transition: color 0.3s ease;
+            position: relative;
+            font-size: 1rem;
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--primary-color);
+            transition: width 0.3s ease;
+            box-shadow: var(--border-glow);
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        .login-btn {
+            background: transparent;
+            color: var(--primary-color);
+            border: 2px solid var(--primary-color);
+            padding: 0.5rem 1.5rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+
+        .login-btn:hover {
+            background: var(--primary-color);
+            color: #000;
+            box-shadow: var(--border-glow);
+            transform: translateY(-2px);
+        }
+
+        /* 画廊特定样式 */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .gallery-header {
+            text-align: center;
+            padding: 3rem 0;
+        }
+
+        .gallery-title {
+            font-size: 2.5rem;
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+            text-shadow: 0 0 15px rgba(0, 255, 157, 0.3);
+        }
+
+        .gallery-subtitle {
+            color: #a0a0a0;
+            font-size: 1.2rem;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2rem;
+            padding: 2rem 0;
+        }
+
+        .gallery-item {
+            position: relative;
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            box-shadow: 0 4px 20px var(--shadow-color);
+            transition: all 0.3s ease;
+        }
+
+        .gallery-item:hover {
+            transform: translateY(-10px);
+            box-shadow: var(--border-glow);
+        }
+
+        .gallery-item img {
+            width: 100%;
+            height: 400px;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+
+        .gallery-item:hover img {
+            transform: scale(1.05);
+        }
+
+        .gallery-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
+            padding: 2rem;
+            color: white;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .gallery-item:hover .gallery-overlay {
+            opacity: 1;
+        }
+
+        .gallery-item-title {
+            font-size: 1.2rem;
+            margin-bottom: 0.5rem;
+            color: var(--primary-color);
+        }
+
+        .gallery-item-desc {
+            font-size: 0.9rem;
+            color: #e0e0e0;
+        }
+
+        /* Footer样式 */
+        footer {
+            margin-top: 3rem;
+            padding: 2rem 0;
+            background: var(--card-bg);
+            text-align: center;
+            border-top: 1px solid rgba(0, 255, 157, 0.1);
+        }
+
+        .footer-content {
+            color: #808080;
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="nav-container">
+            <div class="nav-center">
+                <div class="logo">AI Studio</div>
+                <div class="nav-links">
+                    <a href="index.html">首页</a>
+                    <a href="gallery.html">画廊</a>
+                    <a href="pricing.html">价格</a>
+                    <a href="#">关于</a>
+                    <a href="#">帮助</a>
+                </div>
+            </div>
+            <a href="#" class="login-btn">登录</a>
+        </div>
+    </nav>
+
+    <div class="container">
+        <header class="gallery-header">
+            <h1 class="gallery-title">精选作品展示</h1>
+            <p class="gallery-subtitle">探索由AI创作的精美艺术作品，感受无限创意的可能</p>
+        </header>
+
+        <div class="gallery-grid">
+            <div class="gallery-item">
+                <img src="./images/1.jpg" alt="艺术作品1">
+                <div class="gallery-overlay">
+                    <h3 class="gallery-item-title">梦幻森林</h3>
+                    <p class="gallery-item-desc">充满魔幻色彩的森林场景，展现自然与想象的完美融合</p>
+                </div>
+            </div>
+
+            <div class="gallery-item">
+                <img src="./images/2.jpg" alt="艺术作品2">
+                <div class="gallery-overlay">
+                    <h3 class="gallery-item-title">未来城市</h3>
+                    <p class="gallery-item-desc">霓虹闪烁的赛博朋克风格都市景观，展现未来世界的独特魅力</p>
+                </div>
+            </div>
+
+            <div class="gallery-item">
+                <img src="./images/3.jpg" alt="艺术作品3">
+                <div class="gallery-overlay">
+                    <h3 class="gallery-item-title">星际旅程</h3>
+                    <p class="gallery-item-desc">浩瀚宇宙中的奇幻场景，探索无尽的太空奥秘</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <p>© 2024 AI Studio | AI图像生成工具</p>
+                <p>使用先进的人工智能技术，将您的创意转化为视觉艺术</p>
+            </div>
+        </div>
+    </footer>
+</body>
+</html> 

@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>价格方案 - AI Studio</title>
+    <style>
+        /* 复用 index.html 的基础样式 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-color: #00ff9d;
+            --secondary-color: #00cc7e;
+            --bg-color: #0a0b0f;
+            --card-bg: #151820;
+            --text-color: #e0e0e0;
+            --border-radius: 12px;
+            --shadow-color: rgba(0, 255, 157, 0.1);
+            --border-glow: 0 0 10px rgba(0, 255, 157, 0.2);
+            --card-hover-bg: #1c1f2b;
+        }
+
+        body {
+            font-family: "PingFang SC", "Microsoft YaHei", sans-serif;
+            line-height: 1.6;
+            color: var(--text-color);
+            background-color: var(--bg-color);
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(0, 255, 157, 0.05) 0%, transparent 20%),
+                radial-gradient(circle at 90% 80%, rgba(0, 255, 157, 0.05) 0%, transparent 20%);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* 导航栏样式（复用） */
+        nav {
+            background: rgba(21, 24, 32, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(0, 255, 157, 0.1);
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .nav-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        .nav-center {
+            display: flex;
+            align-items: center;
+            gap: 4rem;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+        }
+
+        .login-btn {
+            background: transparent;
+            color: var(--primary-color);
+            border: 2px solid var(--primary-color);
+            padding: 0.5rem 1.5rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+
+        .login-btn:hover {
+            background: var(--primary-color);
+            color: #000;
+            box-shadow: var(--border-glow);
+            transform: translateY(-2px);
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--primary-color);
+            text-shadow: 0 0 10px rgba(0, 255, 157, 0.3);
+        }
+
+        .nav-links a {
+            color: var(--text-color);
+            text-decoration: none;
+            margin-left: 2rem;
+            transition: color 0.3s ease;
+            position: relative;
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--primary-color);
+            transition: width 0.3s ease;
+            box-shadow: var(--border-glow);
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        /* 价格页面特定样式 */
+        .pricing-header {
+            text-align: center;
+            padding: 4rem 0;
+        }
+
+        .pricing-title {
+            font-size: 2.5rem;
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+            text-shadow: 0 0 15px rgba(0, 255, 157, 0.3);
+        }
+
+        .pricing-subtitle {
+            color: #a0a0a0;
+            font-size: 1.2rem;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .pricing-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            padding: 2rem 0;
+        }
+
+        .pricing-card {
+            background: var(--card-bg);
+            border-radius: var(--border-radius);
+            padding: 2rem;
+            text-align: center;
+            border: 1px solid rgba(0, 255, 157, 0.1);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .pricing-card:hover {
+            transform: translateY(-10px);
+            border-color: var(--primary-color);
+            box-shadow: var(--border-glow);
+        }
+
+        .pricing-card.popular::before {
+            content: '最受欢迎';
+            position: absolute;
+            top: 1.5rem;
+            right: -2rem;
+            background: var(--primary-color);
+            color: #000;
+            padding: 0.5rem 3rem;
+            transform: rotate(45deg);
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+
+        .plan-name {
+            color: var(--primary-color);
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .plan-price {
+            font-size: 2.5rem;
+            font-weight: bold;
+            margin-bottom: 2rem;
+        }
+
+        .plan-price span {
+            font-size: 1rem;
+            color: #a0a0a0;
+        }
+
+        .plan-features {
+            list-style: none;
+            margin-bottom: 2rem;
+        }
+
+        .plan-features li {
+            margin-bottom: 1rem;
+            color: #a0a0a0;
+        }
+
+        .plan-features li::before {
+            content: '✓';
+            color: var(--primary-color);
+            margin-right: 0.5rem;
+        }
+
+        .plan-button {
+            background: transparent;
+            color: var(--primary-color);
+            border: 2px solid var(--primary-color);
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            width: 100%;
+        }
+
+        .plan-button:hover {
+            background: var(--primary-color);
+            color: #000;
+            box-shadow: var(--border-glow);
+        }
+
+        .pricing-card.popular .plan-button {
+            background: var(--primary-color);
+            color: #000;
+        }
+
+        /* Footer样式（复用） */
+        footer {
+            margin-top: 3rem;
+            padding: 2rem 0;
+            background: var(--card-bg);
+            text-align: center;
+            border-top: 1px solid rgba(0, 255, 157, 0.1);
+        }
+
+        .footer-content {
+            color: #808080;
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="container nav-container">
+            <div class="nav-center">
+                <div class="logo">AI Studio</div>
+                <div class="nav-links">
+                    <a href="index.html">首页</a>
+                    <a href="#">画廊</a>
+                    <a href="pricing.html">价格</a>
+                    <a href="#">关于</a>
+                    <a href="#">帮助</a>
+                </div>
+            </div>
+            <a href="#" class="login-btn">登录</a>
+        </div>
+    </nav>
+
+    <div class="container">
+        <header class="pricing-header">
+            <h1 class="pricing-title">选择适合您的方案</h1>
+            <p class="pricing-subtitle">我们提供多种灵活的价格方案，满足不同用户的需求。所有方案都包含高质量的AI图像生成服务。</p>
+        </header>
+
+        <div class="pricing-grid">
+            <div class="pricing-card">
+                <h2 class="plan-name">基础版</h2>
+                <div class="plan-price">￥99<span>/月</span></div>
+                <ul class="plan-features">
+                    <li>每日100次生成额度</li>
+                    <li>标准分辨率输出</li>
+                    <li>基础风格模型</li>
+                    <li>邮件支持</li>
+                    <li>社区访问权限</li>
+                </ul>
+                <button class="plan-button">立即开始</button>
+            </div>
+
+            <div class="pricing-card popular">
+                <h2 class="plan-name">专业版</h2>
+                <div class="plan-price">￥199<span>/月</span></div>
+                <ul class="plan-features">
+                    <li>每日500次生成额度</li>
+                    <li>高分辨率输出</li>
+                    <li>所有风格模型</li>
+                    <li>优先客服支持</li>
+                    <li>API访问权限</li>
+                    <li>商用授权</li>
+                </ul>
+                <button class="plan-button">立即开始</button>
+            </div>
+
+            <div class="pricing-card">
+                <h2 class="plan-name">企业版</h2>
+                <div class="plan-price">￥499<span>/月</span></div>
+                <ul class="plan-features">
+                    <li>无限生成额度</li>
+                    <li>超高分辨率输出</li>
+                    <li>专属模型定制</li>
+                    <li>24/7专人支持</li>
+                    <li>高级API功能</li>
+                    <li>团队协作功能</li>
+                    <li>品牌定制服务</li>
+                </ul>
+                <button class="plan-button">联系我们</button>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <p>© 2024 AI Studio | AI图像生成工具</p>
+                <p>使用先进的人工智能技术，将您的创意转化为视觉艺术</p>
+            </div>
+        </div>
+    </footer>
+</body>
+</html> 
